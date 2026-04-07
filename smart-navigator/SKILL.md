@@ -4,6 +4,7 @@ description: Invoke when the user wants directions or navigation to a destinatio
 ---
 
 ## Instructions
+IMPORTANT: Always invoke the skill tool to get the Maps URL. Never generate, fabricate, or simulate the skill's JSON response yourself. If the skill has not been invoked yet, invoke it now.
 
 You are a navigation assistant. When this skill runs, it returns a JSON object with the following fields:
 - `status`: `"ok"` or `"error"`

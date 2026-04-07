@@ -16,33 +16,14 @@
     }
 
     // --- Parse destination ---
-    // Strip leading verb phrases then grab the rest as destination.
-    // Patterns: "navigate to X", "directions to X", "how do I get to X",
-    //           "walk/drive/cycle to X", "take the train to X", "get to X"
-    var destination = "";
-    var destMatch = input.match(
-      /(?:navigate|directions|get|walk|drive|cycling|cycle|bike|commute|go|travel|take(?:\s+\w+)?)\s+to\s+(.+)/i
-    );
-    if (destMatch) {
-      destination = destMatch[1].trim();
-    } else {
-      // Fallback: strip known verb prefixes and "to" from the start
-      var stripped = input
-        .replace(/^(how\s+(do\s+i|can\s+i|to)\s+)?/i, "")
-        .replace(/^(get|navigate|directions|go|travel|commute)\s+/i, "")
-        .replace(/^to\s+/i, "")
-        .trim();
-      destination = stripped;
-    }
-
-    // Remove trailing mode hints that leaked into destination
-    // e.g. "Schiphol by train" → "Schiphol"
-    destination = destination.replace(/\s+by\s+(car|train|bus|bike|bicycle|foot|transit|walking|driving|cycling|metro|tram|subway|tube)\s*$/i, "").trim();
+    var destination = input
+      .replace(/\s+by\s+(car|train|bus|bike|bicycle|foot|transit|walking|driving|cycling|metro|tram|subway|tube)\s*$/i, "")
+      .trim();
 
     if (!destination) {
       return JSON.stringify({
         status: "error",
-        error: "Could not parse a destination from the request. Please specify where you want to go."
+        error: "No destination provided. Please specify where you want to go."
       });
     }
 

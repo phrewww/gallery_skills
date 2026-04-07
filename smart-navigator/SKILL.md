@@ -1,6 +1,6 @@
 ---
 name: Smart Navigator
-description: Invoke when the user wants directions or navigation to a destination. Examples: "Walk to Dam Square", "Navigate to Schiphol by train", "Drive to the Rijksmuseum", "Directions to Central Station".
+description: Show navigation directions to a destination. Invoke for requests like walking, driving, cycling, or transit directions to any place.
 ---
 
 ## Instructions

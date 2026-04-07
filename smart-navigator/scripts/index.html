@@ -2,35 +2,25 @@
 <html>
 <body>
 <script>
-  window.ai_edge_gallery_get_result = async function(userInput) {
-    var input = (userInput || "").trim();
+  window.ai_edge_gallery_get_result = async function(data) {
+    try {
+      var parsed = JSON.parse(data);
+      var destination = (parsed.destination || "").trim();
+      var mode = (parsed.mode || "driving").trim();
 
-    // --- Parse travel mode ---
-    var mode = "driving";
-    if (/\b(walk|walking|on foot)\b/i.test(input)) {
-      mode = "walking";
-    } else if (/\b(bik(e|ing)|cycl(e|ing|ist)|bicycle)\b/i.test(input)) {
-      mode = "bicycling";
-    } else if (/\b(train|bus|transit|public transport|metro|tram|subway|tube)\b/i.test(input)) {
-      mode = "transit";
+      if (!destination) {
+        return JSON.stringify({error: "No destination provided."});
+      }
+
+      var url = "https://www.google.com/maps/dir/?api=1" +
+                "&origin=My+Location" +
+                "&destination=" + encodeURIComponent(destination) +
+                "&travelmode=" + encodeURIComponent(mode);
+
+      return JSON.stringify({webview: {iframe: true, url: url}});
+    } catch (e) {
+      return JSON.stringify({error: "Invalid input: " + e.message});
     }
-
-    // --- Parse destination ---
-    var destination = input
-      .replace(/\s+by\s+(car|train|bus|bike|bicycle|foot|transit|walking|driving|cycling|metro|tram|subway|tube)\s*$/i, "")
-      .replace(/^(walk(?:ing)?\s+to|navigate\s+to|directions\s+to|how\s+do\s+i\s+get\s+to|drive\s+to|cycle\s+to|take\s+me\s+to|get\s+me\s+to|go\s+to|take\s+the\s+train\s+to|on\s+foot\s+to)\s+/i, "")
-      .trim();
-
-    // --- Build Google Maps URL ---
-    var url = "https://www.google.com/maps/dir/?api=1" +
-              "&origin=My+Location" +
-              "&destination=" + encodeURIComponent(destination) +
-              "&travelmode=" + encodeURIComponent(mode);
-
-    return JSON.stringify({
-      status: "ok",
-      url: url
-    });
   };
 </script>
 </body>

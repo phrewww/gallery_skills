@@ -1,6 +1,6 @@
 ---
-Name: Smart Navigator
-Description: Invoke when the user wants directions or navigation to a destination, including phrases like "navigate to", "directions to", "how do I get to", "walk to", "drive to", "cycle to", or "take the train to" any place. Do not invoke for general questions about locations that do not involve routing.
+name: Smart Navigator
+description: Invoke when the user wants directions or navigation to a destination, including phrases like "navigate to", "directions to", "how do I get to", "walk to", "drive to", "cycle to", or "take the train to" any place. Do not invoke for general questions about locations that do not involve routing.
 ---
 
 ## Instructions

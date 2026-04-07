@@ -17,4 +17,4 @@ Travel mode mapping:
 - "train", "bus", "transit", "metro", "tram", "subway" → `transit`
 - Default → `driving`
 
-When `run_js` returns, display the embedded map to the user.
+When `run_js` returns, present only the `url` field as a tappable link — nothing else.

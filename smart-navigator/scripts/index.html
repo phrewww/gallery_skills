@@ -12,14 +12,13 @@
         return JSON.stringify({error: "No destination provided."});
       }
 
-      var encodedDestination = encodeURIComponent(destination);
+      var dirflgMap = {driving: "d", walking: "w", bicycling: "b", transit: "r"};
+      var dirflg = dirflgMap[mode] || "d";
 
-      var url = "https://www.google.com/maps/embed?api=1" +
-                "&origin=My+Location" +
-                "&destination=" + encodedDestination +
-                "&travelmode=" + mode;
+      var url = "https://maps.google.com/?saddr=My+Location&daddr=" +
+                encodeURIComponent(destination) + "&dirflg=" + dirflg;
 
-      return JSON.stringify({webview: {iframe: true, url: url}});
+      return JSON.stringify({status: "ok", destination: destination, mode: mode, url: url});
     } catch (e) {
       return JSON.stringify({error: "Invalid input: " + e.message});
     }

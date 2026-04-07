@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script>
+  window.ai_edge_gallery_get_result = async function(userInput) {
+    var input = (userInput || "").trim();
+
+    // --- Parse travel mode ---
+    var mode = "driving";
+    if (/\b(walk|walking|on foot)\b/i.test(input)) {
+      mode = "walking";
+    } else if (/\b(bik(e|ing)|cycl(e|ing|ist)|bicycle)\b/i.test(input)) {
+      mode = "bicycling";
+    } else if (/\b(train|bus|transit|public transport|metro|tram|subway|tube)\b/i.test(input)) {
+      mode = "transit";
+    }
+
+    // --- Parse destination ---
+    // Strip leading verb phrases then grab the rest as destination.
+    // Patterns: "navigate to X", "directions to X", "how do I get to X",
+    //           "walk/drive/cycle to X", "take the train to X", "get to X"
+    var destination = "";
+    var destMatch = input.match(
+      /(?:navigate|directions|get|walk|drive|cycling|cycle|bike|commute|go|travel|take(?:\s+\w+)?)\s+to\s+(.+)/i
+    );
+    if (destMatch) {
+      destination = destMatch[1].trim();
+    } else {
+      // Fallback: strip known verb prefixes and "to" from the start
+      var stripped = input
+        .replace(/^(how\s+(do\s+i|can\s+i|to)\s+)?/i, "")
+        .replace(/^(get|navigate|directions|go|travel|commute)\s+/i, "")
+        .replace(/^to\s+/i, "")
+        .trim();
+      destination = stripped;
+    }
+
+    // Remove trailing mode hints that leaked into destination
+    // e.g. "Schiphol by train" → "Schiphol"
+    destination = destination.replace(/\s+by\s+(car|train|bus|bike|bicycle|foot|transit|walking|driving|cycling|metro|tram|subway|tube)\s*$/i, "").trim();
+
+    if (!destination) {
+      return JSON.stringify({
+        status: "error",
+        error: "Could not parse a destination from the request. Please specify where you want to go."
+      });
+    }
+
+    // --- Get GPS coordinates ---
+    var coords;
+    try {
+      coords = await new Promise(function(resolve, reject) {
+        if (!navigator.geolocation) {
+          reject(new Error("geolocation_unavailable"));
+          return;
+        }
+        var timer = setTimeout(function() {
+          reject(new Error("geolocation_timeout"));
+        }, 10000);
+        navigator.geolocation.getCurrentPosition(
+          function(pos) {
+            clearTimeout(timer);
+            resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          },
+          function(err) {
+            clearTimeout(timer);
+            var msg = "geolocation_error";
+            if (err.code === 1) msg = "geolocation_permission_denied";
+            else if (err.code === 2) msg = "geolocation_position_unavailable";
+            else if (err.code === 3) msg = "geolocation_timeout";
+            reject(new Error(msg));
+          },
+          { enableHighAccuracy: true, timeout: 9000, maximumAge: 30000 }
+        );
+      });
+    } catch (e) {
+      return JSON.stringify({
+        status: "error",
+        destination: destination,
+        mode: mode,
+        error: e.message || "geolocation_error"
+      });
+    }
+
+    // --- Build Google Maps URL ---
+    var origin = coords.lat + "," + coords.lng;
+    var url = "https://www.google.com/maps/dir/?api=1" +
+              "&origin=" + encodeURIComponent(origin) +
+              "&destination=" + encodeURIComponent(destination) +
+              "&travelmode=" + encodeURIComponent(mode);
+
+    return JSON.stringify({
+      status: "ok",
+      destination: destination,
+      mode: mode,
+      url: url,
+      coords: coords
+    });
+  };
+</script>
+</body>
+</html>

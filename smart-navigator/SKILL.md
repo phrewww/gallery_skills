@@ -1,5 +1,5 @@
 ---
-name: Smart Navigator
+name: smart-navigator
 description: Show navigation directions to a destination. Invoke for requests like walking, driving, cycling, or transit directions to any place.
 ---
 

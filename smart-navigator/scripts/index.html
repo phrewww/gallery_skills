@@ -18,6 +18,7 @@
     // --- Parse destination ---
     var destination = input
       .replace(/\s+by\s+(car|train|bus|bike|bicycle|foot|transit|walking|driving|cycling|metro|tram|subway|tube)\s*$/i, "")
+      .replace(/^(walk(?:ing)?\s+to|navigate\s+to|directions\s+to|how\s+do\s+i\s+get\s+to|drive\s+to|cycle\s+to|take\s+me\s+to|get\s+me\s+to|go\s+to|take\s+the\s+train\s+to|on\s+foot\s+to)\s+/i, "")
       .trim();
 
     if (!destination) {
@@ -29,6 +30,7 @@
 
     // --- Build Google Maps URL ---
     var url = "https://www.google.com/maps/dir/?api=1" +
+              "&origin=My+Location" +
               "&destination=" + encodeURIComponent(destination) +
               "&travelmode=" + encodeURIComponent(mode);
 

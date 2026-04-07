@@ -18,4 +18,5 @@ Travel mode mapping:
 - "train", "bus", "transit", "metro", "tram", "subway" → `transit`
 - Default → `driving`
 
-When `run_js` returns, present only the `url` field as a tappable link — nothing else.
+
+When run_js returns, extract the `url` field from the JSON and output it as a raw URL on its own line. Do not add any other text before or after the URL.

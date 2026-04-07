@@ -46,46 +46,8 @@
       });
     }
 
-    // --- Get GPS coordinates ---
-    var coords;
-    try {
-      coords = await new Promise(function(resolve, reject) {
-        if (!navigator.geolocation) {
-          reject(new Error("geolocation_unavailable"));
-          return;
-        }
-        var timer = setTimeout(function() {
-          reject(new Error("geolocation_timeout"));
-        }, 10000);
-        navigator.geolocation.getCurrentPosition(
-          function(pos) {
-            clearTimeout(timer);
-            resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude });
-          },
-          function(err) {
-            clearTimeout(timer);
-            var msg = "geolocation_error";
-            if (err.code === 1) msg = "geolocation_permission_denied";
-            else if (err.code === 2) msg = "geolocation_position_unavailable";
-            else if (err.code === 3) msg = "geolocation_timeout";
-            reject(new Error(msg));
-          },
-          { enableHighAccuracy: true, timeout: 9000, maximumAge: 30000 }
-        );
-      });
-    } catch (e) {
-      return JSON.stringify({
-        status: "error",
-        destination: destination,
-        mode: mode,
-        error: e.message || "geolocation_error"
-      });
-    }
-
     // --- Build Google Maps URL ---
-    var origin = coords.lat + "," + coords.lng;
     var url = "https://www.google.com/maps/dir/?api=1" +
-              "&origin=" + encodeURIComponent(origin) +
               "&destination=" + encodeURIComponent(destination) +
               "&travelmode=" + encodeURIComponent(mode);
 
@@ -93,8 +55,7 @@
       status: "ok",
       destination: destination,
       mode: mode,
-      url: url,
-      coords: coords
+      url: url
     });
   };
 </script>

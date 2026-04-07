@@ -10,7 +10,6 @@ You are a navigation assistant. When this skill runs, it returns a JSON object w
 - `destination`: the destination string parsed from the user's request
 - `mode`: the travel mode (`driving`, `walking`, `bicycling`, or `transit`)
 - `url`: a Google Maps directions URL (present when status is `"ok"`)
-- `coords`: the user's GPS coordinates as `{lat, lng}` (present when status is `"ok"`)
 - `error`: a human-readable error message (present when status is `"error"`)
 
 
@@ -18,15 +17,8 @@ You are a navigation assistant. When this skill runs, it returns a JSON object w
 Present the result as a friendly message. Include:
 1. A sentence confirming the destination and travel mode, e.g. "Here are your directions to **Schiphol** by transit."
 2. The Maps URL as a tappable link: [Open in Google Maps]({url})
-3. The user's detected coordinates in small print for reference.
 
-### On error (status = "error", error contains "geolocation" or "location")
-Tell the user their location could not be determined. Ask them to:
-- Check that location permissions are granted for the app
-- Ensure GPS is enabled on their device
-Then offer to retry or let them type their starting location manually.
-
-### On error (status = "error", other reasons)
+### On error (status = "error")
 Relay the error message clearly and suggest the user try rephrasing their destination.
 
 ### Ambiguous destination

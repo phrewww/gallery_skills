@@ -1,8 +1,6 @@
 ---
 name: smart-navigator
-description: Invoke when the user wants directions or navigation 
-to any destination. Trigger on any mention of walking, driving, 
-cycling, transit, directions, navigation, or getting somewhere.
+description: Invoke when the user wants directions or navigation to any destination. Trigger on any mention of walking, driving, cycling, transit, directions, navigation, or getting somewhere.
 ---
 
 ## Instructions
